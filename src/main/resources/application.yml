@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: read-replica-demo
+
+  profiles:
+    active: ci
+
+  # Enable ProblemDetails for RFC 7807 compliant error responses
+  mvc:
+    problemdetails:
+      enabled: true

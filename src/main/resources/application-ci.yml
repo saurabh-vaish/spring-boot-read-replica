@@ -1,0 +1,128 @@
+# Application Configuration
+server:
+  port: 8080
+
+# Logging Configuration
+logging:
+  level:
+    com.app: DEBUG
+    org.springframework.jdbc: DEBUG
+    org.springframework.transaction: DEBUG
+    com.zaxxer.hikari: info
+#  pattern:
+#    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+#    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+  file:
+    name: logs/application.log
+
+  # Master Database Configuration
+spring:
+  datasource:
+    master:
+      url: jdbc:postgresql://192.168.1.17:6000/readreplicademo
+      username: ${MASTER_DB_USER:postgres}
+      password: ${MASTER_DB_PASSWORD:root}
+      driver-class-name: org.postgresql.Driver
+    # Replica Database Configurations
+    replica1:
+      url: jdbc:postgresql://192.168.1.17:6000/readreplicademo
+      username: ${MASTER_DB_USER:postgres}
+      password: ${MASTER_DB_PASSWORD:root}
+      driver-class-name: org.postgresql.Driver
+
+    replica2:
+      url: jdbc:postgresql://192.168.1.17:6000/readreplicademo
+      username: ${MASTER_DB_USER:postgres}
+      password: ${MASTER_DB_PASSWORD:root}
+      driver-class-name: org.postgresql.Driver
+
+    replica3:
+      url: jdbc:postgresql://192.168.1.17:6000/readreplicademo
+      username: ${MASTER_DB_USER:postgres}
+      password: ${MASTER_DB_PASSWORD:root}
+      driver-class-name: org.postgresql.Driver
+
+  # Transaction Configuration
+  transaction:
+    default-timeout: 30
+    rollback-on-commit-failure: true
+
+  # JPA Configuration (if using JPA)
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+        use_sql_comments: true
+        jdbc:
+          batch_size: 20
+        connection:
+          provider_disables_autocommit: true
+
+
+  threads:
+    virtual:
+      enabled: true
+
+  # Retry Configuration
+#  retry:
+#    enabled: true
+
+# Management & Monitoring
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: always
+    metrics:
+      access: read_only
+  health:
+    db:
+      enabled: true
+  metrics:
+    enable:
+      all: true
+#  metrics:
+#    export:
+#      prometheus:
+#        enabled: true
+
+# Custom Application Properties
+app:
+  database:
+    read-timeout: 30
+    write-timeout: 60
+    health-check-interval: 30000
+    connection-retry-attempts: 3
+    connection-retry-delay: 2000
+
+  async:
+    core-pool-size: 10
+    max-pool-size: 50
+    queue-capacity: 100
+    keep-alive-seconds: 60
+
+  scheduling:
+    pool-size: 5
+    health-check-cron: "0 */1 * * * *"  # Every minute
+    maintenance-cron: "0 0 2 * * *"     # Daily at 2 AM
+
+  hikari:
+    auto-commit: false
+    connection-timeout: 20000
+    idle-timeout: 300000
+    max-lifetime: 1200000
+    maximum-pool-size: 20
+    minimum-idle: 5
+
+#  circuit-breaker:
+#    enabled: true
+#    failure-threshold: 5
+#    timeout: 10000
+#    reset-timeout: 60000

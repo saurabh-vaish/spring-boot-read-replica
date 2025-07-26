@@ -1,0 +1,76 @@
+version: '3.8'
+
+services:
+  master:
+    build: ./master
+    container_name: master
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+    ports:
+      - "6000:5432"
+    volumes:
+      - master-data:/var/lib/postgresql/data
+    networks:
+      - pgnet
+
+  replica1:
+    build: ./replica
+    container_name: replica1
+    depends_on:
+      - master
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root      # required by postgres image but not used for init
+      PGPASSWORD: root             # for pg_basebackup auth replication user
+      REPLICA_NAME: replica1
+    ports:
+      - "6001:5432"
+    volumes:
+      - replica1-data:/var/lib/postgresql/data
+    networks:
+      - pgnet
+
+  replica2:
+    build: ./replica
+    container_name: replica2
+    depends_on:
+      - master
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+      PGPASSWORD: root
+      REPLICA_NAME: replica2
+    ports:
+      - "6002:5432"
+    volumes:
+      - replica2-data:/var/lib/postgresql/data
+    networks:
+      - pgnet
+
+  replica3:
+    build: ./replica
+    container_name: replica3
+    depends_on:
+      - master
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+      PGPASSWORD: root
+      REPLICA_NAME: replica3
+    ports:
+      - "6003:5432"
+    volumes:
+      - replica3-data:/var/lib/postgresql/data
+    networks:
+      - pgnet
+
+volumes:
+  master-data:
+  replica1-data:
+  replica2-data:
+  replica3-data:
+
+networks:
+  pgnet:
+
