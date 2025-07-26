@@ -117,23 +117,23 @@ public class ReadWriteRoutingDataSource extends AbstractRoutingDataSource {
         }
     }
     
-    public void forceDataSource(String key) {
-        forceDataSource.set(key);
-    }
-    
-    public void clearForcedDataSource() {
-        forceDataSource.remove();
-    }
-    
-    public static void forceMaster() {
-        ThreadLocal<String> threadLocal = new ThreadLocal<>();
-        threadLocal.set(DataSourceType.MASTER.name());
-    }
-    
-    public static void forceReplica() {
-        ThreadLocal<String> threadLocal = new ThreadLocal<>();
-        threadLocal.set("replica");
-    }
+//    public void forceDataSource(String key) {
+//        forceDataSource.set(key);
+//    }
+//
+//    public void clearForcedDataSource() {
+//        forceDataSource.remove();
+//    }
+//
+//    public static void forceMaster() {
+//        ThreadLocal<String> threadLocal = new ThreadLocal<>();
+//        threadLocal.set(DataSourceType.MASTER.name());
+//    }
+//
+//    public static void forceReplica() {
+//        ThreadLocal<String> threadLocal = new ThreadLocal<>();
+//        threadLocal.set("replica");
+//    }
 
 
 //    /**

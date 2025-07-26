@@ -1,10 +1,7 @@
 package com.app.readreplica.config.database.annotations.aspect;
 
 import com.app.readreplica.config.database.DataSourceContextHolder;
-import org.aspectj.lang.annotation.After;
-import org.aspectj.lang.annotation.AfterThrowing;
-import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
+import org.aspectj.lang.annotation.*;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
@@ -20,32 +17,39 @@ import org.springframework.stereotype.Component;
 @Order(0)
 public class ReadOnlyRouteAspect {
 
-    @Before("@annotation(com.app.readreplica.config.database.annotations.ReadOnlyReplica)")
+
+    @Pointcut("@annotation(com.app.readreplica.config.database.annotations.ReadOnlyReplica)")
+    private void readOnlyReplicaAnnotation() {}
+
+    @Pointcut("@annotation(com.app.readreplica.config.database.annotations.ForceMaster)")
+    private void forceMasterAnnotation() {}
+
+    @Before("readOnlyReplicaAnnotation()")
     public void setReadDataSourceType() {
         DataSourceContextHolder.setReplicaRequired(true);
     }
 
-    @After("@annotation(com.app.readreplica.config.database.annotations.ReadOnlyReplica)")
+    @After("readOnlyReplicaAnnotation()")
     public void clearDataSourceType() {
         DataSourceContextHolder.clearReplica();
     }
 
-    @AfterThrowing(pointcut = "@annotation(com.app.readreplica.config.database.annotations.ReadOnlyReplica)", throwing = "ex")
+    @AfterThrowing(pointcut = "readOnlyReplicaAnnotation()", throwing = "ex")
     public void clearAfterException(Throwable ex) {
         DataSourceContextHolder.clearReplica();
     }
 
-    @Before("@annotation(com.app.readreplica.config.database.annotations.ForceMaster)")
+    @Before("forceMasterAnnotation()")
     public void setForceMasterDataSourceType() {
         DataSourceContextHolder.setMasterRequired(true);
     }
 
-    @After("@annotation(com.app.readreplica.config.database.annotations.ForceMaster)")
+    @After("forceMasterAnnotation()")
     public void clearForceMasterDataSourceType() {
         DataSourceContextHolder.clearMaster();
     }
 
-    @AfterThrowing(pointcut = "@annotation(com.app.readreplica.config.database.annotations.ForceMaster)", throwing = "ex")
+    @AfterThrowing(pointcut = "forceMasterAnnotation()", throwing = "ex")
     public void clearForceMasterAfterException(Throwable ex) {
         DataSourceContextHolder.clearMaster();
     }
